@@ -13,24 +13,23 @@ import { getChannelPointRewards } from "./twitch/ChannelRewards.js";
 import { discoverAvatarParameters } from "./osc/OscQuery.js";
 import { writeFileSync } from "fs";
 
-// Placeholder for user-specific configuration
-const twitchClientId = "jblxly7aztet49984hjw4lyhjc7526";
-const twitchClientSecret = "f41xchnlez64nv18o6rllysrma0dc1";
-const tokenFilePath = "./tokens.json"; // Path to store Twitch tokens
-const channelName = "bh_lithium";
-
-const oscServerAddress = "127.0.0.1"; // OSC server IP address
-const oscServerPort = 9000; // OSC server port
+import { ConfigManager } from "./config/ConfigManager.js";
 
 // Main async function to run the example
 async function main() {
   try {
+    // Instantiate ConfigManager and get configs
+    const configManager = new ConfigManager();
+    const twitchConfig = configManager.getTwitchConfig();
+    const oscConfig = configManager.getOscConfig();
+    const rewardMappingConfig = configManager.getRewardMappingConfig();
+
     console.log("Getting auth");
     // Initialize Twitch authentication provider
     const authProvider = await getAuthProvider(
-      twitchClientId,
-      twitchClientSecret,
-      tokenFilePath
+      twitchConfig.clientId,
+      twitchConfig.clientSecret,
+      twitchConfig.tokenFilePath
     );
 
     console.log("Getting api");
@@ -38,13 +37,16 @@ async function main() {
     const apiClient = getApiClient(authProvider);
 
     // Initialize OSC client
-    const oscClient = new OscClient(oscServerAddress, oscServerPort);
+    const oscClient = new OscClient(
+      oscConfig.serverAddress,
+      oscConfig.serverPort
+    );
 
     console.log("Getting channel id");
     // get a twitch channel id
     const twitchChannelId = (await getUserIdByUsername(
       apiClient,
-      channelName
+      twitchConfig.channelName
     ))!;
 
     // osc params
@@ -56,19 +58,40 @@ async function main() {
     const rewards = await getChannelPointRewards(apiClient, twitchChannelId);
 
     const rewardMap: RewardMapEntry[] = params
-      // TODO: Have some config system to parameterize this
-      .filter((p) => p.path === "/avatar/parameters/Phone")
+      .filter((p) => {
+        // Dynamic filter based on config property and value
+        const prop = rewardMappingConfig.oscParameterFilter.property;
+        const val = rewardMappingConfig.oscParameterFilter.value;
+        return (p as any)[prop] === val;
+      })
       .map((p) => {
-        return {
-          osc: {
-            address: p.path,
-            type: "b",
-            value: 1,
-          },
-          reward: rewards.filter((r) => r.title.includes("Text"))[0],
-          // TODO: Additionally expose the optional timeout variable
+        // Find reward whose title includes configured string
+        const titleIncludes = rewardMappingConfig.rewardFilter.titleIncludes;
+        const matchedReward = rewards.find((r) =>
+          r.title.includes(titleIncludes)
+        );
+        if (!matchedReward) {
+          console.warn(
+            `No reward found with title including '${titleIncludes}' for OSC param ${p.path}`
+          );
+          return null;
+        }
+        const mappingTemplate = rewardMappingConfig.mappingTemplate;
+        const oscEntry: any = {
+          address: p.path,
+          type: mappingTemplate.oscType,
+          value: mappingTemplate.oscValue,
         };
-      });
+        if (mappingTemplate.timeoutMs !== null) {
+          oscEntry.timeoutMs = mappingTemplate.timeoutMs;
+          oscEntry.timeoutOscValue = mappingTemplate.timeoutOscValue;
+        }
+        return {
+          osc: oscEntry,
+          reward: matchedReward,
+        };
+      })
+      .filter((entry): entry is RewardMapEntry => entry !== null);
 
     rewardMap.forEach((p) => {
       console.log(
