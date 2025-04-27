@@ -1,3 +1,4 @@
+import { fail } from "assert";
 import { DiscoveredService, OSCQAccess, OSCQueryDiscovery } from "oscquery";
 import { SerializedNode } from "oscquery/dist/lib/serialized_node.js";
 
@@ -22,6 +23,16 @@ export async function discoverAvatarParameters(): Promise<FlatEntry[]> {
     const discovery = new OSCQueryDiscovery();
     console.log("Discovering...");
 
+    let failed = true;
+
+    setTimeout(() => {
+      // a timeout of 10 seconds to kill this if nothing happens
+      if (failed) {
+        discovery.stop();
+        throw new Error("discovery timed out after 10 seconds");
+      }
+    }, 10000);
+
     const resp: Record<string, SerializedNode> | undefined = await new Promise(
       (resolve) => {
         discovery.on("up", (service: DiscoveredService) => {
@@ -31,6 +42,8 @@ export async function discoverAvatarParameters(): Promise<FlatEntry[]> {
         discovery.start();
       }
     );
+
+    failed = false;
 
     // Flatten the namespace entries into a flat array of entries with full paths
     function flattenNodes(

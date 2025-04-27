@@ -9,11 +9,11 @@ import {
   TwitchEventSubListener,
 } from "./twitch/TwitchEventSub.js";
 import { getUserIdByUsername } from "./twitch/UserLookup.js";
-import { getChannelPointRewards } from "./twitch/ChannelRewards.js";
-import { discoverAvatarParameters } from "./osc/OscQuery.js";
-import { writeFileSync } from "fs";
-
+// Removed unused imports related to dynamic reward mapping
 import { ConfigManager } from "./config/ConfigManager.js";
+import { discoverAvatarParameters } from "./osc/OscQuery.js";
+import { getChannelPointRewards } from "./twitch/ChannelRewards.js";
+import { writeFileSync } from "fs";
 
 // Main async function to run the example
 async function main() {
@@ -22,7 +22,6 @@ async function main() {
     const configManager = new ConfigManager();
     const twitchConfig = configManager.getTwitchConfig();
     const oscConfig = configManager.getOscConfig();
-    const rewardMappingConfig = configManager.getRewardMappingConfig();
 
     console.log("Getting auth");
     // Initialize Twitch authentication provider
@@ -57,41 +56,10 @@ async function main() {
     console.log("Getting channel rewards");
     const rewards = await getChannelPointRewards(apiClient, twitchChannelId);
 
-    const rewardMap: RewardMapEntry[] = params
-      .filter((p) => {
-        // Dynamic filter based on config property and value
-        const prop = rewardMappingConfig.oscParameterFilter.property;
-        const val = rewardMappingConfig.oscParameterFilter.value;
-        return (p as any)[prop] === val;
-      })
-      .map((p) => {
-        // Find reward whose title includes configured string
-        const titleIncludes = rewardMappingConfig.rewardFilter.titleIncludes;
-        const matchedReward = rewards.find((r) =>
-          r.title.includes(titleIncludes)
-        );
-        if (!matchedReward) {
-          console.warn(
-            `No reward found with title including '${titleIncludes}' for OSC param ${p.path}`
-          );
-          return null;
-        }
-        const mappingTemplate = rewardMappingConfig.mappingTemplate;
-        const oscEntry: any = {
-          address: p.path,
-          type: mappingTemplate.oscType,
-          value: mappingTemplate.oscValue,
-        };
-        if (mappingTemplate.timeoutMs !== null) {
-          oscEntry.timeoutMs = mappingTemplate.timeoutMs;
-          oscEntry.timeoutOscValue = mappingTemplate.timeoutOscValue;
-        }
-        return {
-          osc: oscEntry,
-          reward: matchedReward,
-        };
-      })
-      .filter((entry): entry is RewardMapEntry => entry !== null);
+    const rewardMap: RewardMapEntry[] = configManager.getRewardMappingConfig(
+      params,
+      rewards
+    );
 
     rewardMap.forEach((p) => {
       console.log(

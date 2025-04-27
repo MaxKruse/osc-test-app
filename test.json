@@ -133,6 +133,132 @@
     ]
   },
   {
+    "path": "/avatar/parameters/VF70_TC_current_trackingMouth",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingEyes",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingRightFingers",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingLeftFingers",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingRightFoot",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingLeftFoot",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingHip",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingRightHand",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingLeftHand",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_current_trackingHead",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/CN_EMOTE_OVERRIDE",
+    "hasAccess": true,
+    "value": [
+      false
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_VRC_Avatar_Descriptor_trackingMouth",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/CN_MOUTH_MORPH_CANCEL_ENABLE",
+    "hasAccess": true,
+    "value": [
+      true
+    ]
+  },
+  {
+    "path": "/avatar/parameters/CN_BLINK_ENABLE",
+    "hasAccess": true,
+    "value": [
+      true
+    ]
+  },
+  {
+    "path": "/avatar/parameters/EM_EMOTE_PRESELECT",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/VF70_TC_VRC_Avatar_Descriptor_trackingEyes",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/EM_EMOTE_SELECT_R",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/EM_EMOTE_SELECT_L",
+    "hasAccess": true,
+    "value": [
+      0
+    ]
+  },
+  {
     "path": "/avatar/parameters/Go/JSRF/Timer",
     "hasAccess": true,
     "value": [
@@ -213,7 +339,7 @@
     "path": "/avatar/parameters/Go/Mirror",
     "hasAccess": true,
     "value": [
-      true
+      false
     ]
   },
   {
@@ -350,132 +476,6 @@
     ]
   },
   {
-    "path": "/avatar/parameters/VF70_TC_current_trackingMouth",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingEyes",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingRightFingers",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingLeftFingers",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingRightFoot",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingLeftFoot",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingHip",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingRightHand",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingLeftHand",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_current_trackingHead",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/CN_EMOTE_OVERRIDE",
-    "hasAccess": true,
-    "value": [
-      false
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_VRC_Avatar_Descriptor_trackingMouth",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/CN_MOUTH_MORPH_CANCEL_ENABLE",
-    "hasAccess": true,
-    "value": [
-      true
-    ]
-  },
-  {
-    "path": "/avatar/parameters/CN_BLINK_ENABLE",
-    "hasAccess": true,
-    "value": [
-      true
-    ]
-  },
-  {
-    "path": "/avatar/parameters/EM_EMOTE_PRESELECT",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/VF70_TC_VRC_Avatar_Descriptor_trackingEyes",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/EM_EMOTE_SELECT_R",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/EM_EMOTE_SELECT_L",
-    "hasAccess": true,
-    "value": [
-      0
-    ]
-  },
-  {
     "path": "/avatar/parameters/VF70_TC_VRC_Avatar_Descriptor_trackingRightFoot",
     "hasAccess": true,
     "value": [
@@ -487,20 +487,6 @@
     "hasAccess": true,
     "value": [
       0
-    ]
-  },
-  {
-    "path": "/avatar/parameters/__MA/AutoParam/Standing$1",
-    "hasAccess": true,
-    "value": [
-      false
-    ]
-  },
-  {
-    "path": "/avatar/parameters/__MA/AutoParam/Sitting$0",
-    "hasAccess": true,
-    "value": [
-      false
     ]
   },
   {
@@ -655,6 +641,20 @@
     "hasAccess": true,
     "value": [
       0
+    ]
+  },
+  {
+    "path": "/avatar/parameters/__MA/AutoParam/Standing$1",
+    "hasAccess": true,
+    "value": [
+      false
+    ]
+  },
+  {
+    "path": "/avatar/parameters/__MA/AutoParam/Sitting$0",
+    "hasAccess": true,
+    "value": [
+      false
     ]
   },
   {

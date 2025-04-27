@@ -2,21 +2,17 @@ import { EventSubWsListener } from "@twurple/eventsub-ws";
 import { ApiClient } from "@twurple/api";
 import { OscClient } from "../osc/OscClient.js";
 
-export type RewardMapEntry = {
-  reward: {
-    id: string;
-    title: string;
-  };
+export interface RewardMapEntry {
+  reward: any; // TODO: Replace with actual Twitch Reward type
   osc: {
     address: string;
-    type: string;
-    value: any;
+    value: number | boolean | string;
   };
   timeout?: {
     delayMs: number;
-    value: any;
+    value: number | boolean | string;
   };
-};
+}
 
 export class TwitchEventSubListener {
   private apiClient: ApiClient;
@@ -57,20 +53,25 @@ export class TwitchEventSubListener {
             );
 
             if (match) {
-              const { address, type, value } = match.osc;
-              await this.oscClient.send(address, type, value);
+              const { address, value } = match.osc;
+              await this.oscClient.send(address, value);
               console.info(
-                `OSC message sent for reward redemption: rewardId=${rewardId}, address=${address}, type=${type}, value=${JSON.stringify(
-                  value
-                )}`
+                `OSC message sent for reward redemption: reward=${
+                  match.reward.title
+                }, address=${address}, value=${JSON.stringify(value)}`
               );
+
+              console.log("Has timeout? ", JSON.stringify(match.timeout));
 
               if (match.timeout !== undefined) {
                 setTimeout(async () => {
-                  await this.oscClient.send(
-                    address,
-                    type,
-                    match.timeout!.value
+                  await this.oscClient.send(address, match.timeout!.value);
+                  console.info(
+                    `OSC message sent for reward redemption: reward=${
+                      match.reward.title
+                    }, address=${address}, value=${JSON.stringify(
+                      match.timeout!.value
+                    )}`
                   );
                 }, match.timeout.delayMs);
               }
