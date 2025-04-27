@@ -73,10 +73,11 @@ export async function getAuthProvider(
             code,
             grant_type: "authorization_code",
             redirect_uri: "http://localhost:3000",
+            scope: "channel:read:redemptions",
           });
 
           const response = await fetch(
-            `https://id.twitch.tv/oauth2/token?${params.toString()}&scope=channel%3Aread%3Aredemptions`,
+            `https://id.twitch.tv/oauth2/token?${params.toString()}`,
             {
               method: "POST",
             }
@@ -136,7 +137,7 @@ export async function getAuthProvider(
         server = app.listen(port, async () => {
           try {
             // Define required scopes. Adjust if specific scopes are needed.
-            const scopes: string[] = []; // Example: ['chat:read', 'channel:read:redemptions'] - Adjust as needed!
+            const scopes: string[] = ["channel:read:redemptions"]; // Example: ['chat:read', 'channel:read:redemptions'] - Adjust as needed!
             const redirectUri = `http://localhost:${port}`;
             const authUrlParams = new URLSearchParams({
               client_id: clientId, // clientId is available from the outer function scope
@@ -144,7 +145,7 @@ export async function getAuthProvider(
               response_type: "code",
               scope: scopes.join(" "),
             });
-            const authorizationUrl = `https://id.twitch.tv/oauth2/authorize?${authUrlParams.toString()}&scope=channel%3Aread%3Aredemptions`;
+            const authorizationUrl = `https://id.twitch.tv/oauth2/authorize?${authUrlParams.toString()}`;
 
             console.log(
               `\n!!! ACTION REQUIRED !!!\nPlease open the following URL in your browser to authenticate:\n${authorizationUrl}\n`
