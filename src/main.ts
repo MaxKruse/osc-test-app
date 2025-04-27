@@ -11,11 +11,13 @@ import {
 import { getUserIdByUsername } from "./twitch/UserLookup.js";
 import { getChannelPointRewards } from "./twitch/ChannelRewards.js";
 import { discoverAvatarParameters } from "./osc/OscQuery.js";
+import { writeFileSync } from "fs";
 
 // Placeholder for user-specific configuration
 const twitchClientId = "jblxly7aztet49984hjw4lyhjc7526";
 const twitchClientSecret = "f41xchnlez64nv18o6rllysrma0dc1";
 const tokenFilePath = "./tokens.json"; // Path to store Twitch tokens
+const channelName = "bh_lithium";
 
 const oscServerAddress = "127.0.0.1"; // OSC server IP address
 const oscServerPort = 9000; // OSC server port
@@ -42,18 +44,19 @@ async function main() {
     // get a twitch channel id
     const twitchChannelId = (await getUserIdByUsername(
       apiClient,
-      "bh_lithium"
+      channelName
     ))!;
 
     // osc params
     const params = await discoverAvatarParameters();
-    console.log(params.length);
+    console.log(`Found ${params.length} avatar params`);
 
     // rewards:
     console.log("Getting channel rewards");
     const rewards = await getChannelPointRewards(apiClient, twitchChannelId);
 
     const rewardMap: RewardMapEntry[] = params
+      // TODO: Have some config system to parameterize this
       .filter((p) => p.path === "/avatar/parameters/Phone")
       .map((p) => {
         return {
@@ -62,7 +65,8 @@ async function main() {
             type: "b",
             value: 1,
           },
-          reward: rewards.filter((r) => r.title.includes("Text-to-Speech"))[0],
+          reward: rewards.filter((r) => r.title.includes("Text"))[0],
+          // TODO: Additionally expose the optional timeout variable
         };
       });
 

@@ -12,6 +12,10 @@ export type RewardMapEntry = {
     type: string;
     value: any;
   };
+  timeout?: {
+    delayMs: number;
+    value: any;
+  };
 };
 
 export class TwitchEventSubListener {
@@ -60,6 +64,16 @@ export class TwitchEventSubListener {
                   value
                 )}`
               );
+
+              if (match.timeout !== undefined) {
+                setTimeout(async () => {
+                  await this.oscClient.send(
+                    address,
+                    type,
+                    match.timeout!.value
+                  );
+                }, match.timeout.delayMs);
+              }
             } else {
               console.debug(
                 `Reward redemption received with unconfigured rewardId: ${rewardId}`
