@@ -53,17 +53,23 @@ async function main() {
     console.log("Getting channel rewards");
     const rewards = await getChannelPointRewards(apiClient, twitchChannelId);
 
-    const rewardMap: RewardMapEntry[] = params.map((p) => {
-      return {
-        osc: {
-          address: p.path,
-          type: "b",
-          value: 1,
-        },
-        rewardId: rewards
-          .filter((r) => r.title.includes("Text-to-Speech"))
-          .map((p) => p.id)[0],
-      };
+    const rewardMap: RewardMapEntry[] = params
+      .filter((p) => p.path === "/avatar/parameters/Phone")
+      .map((p) => {
+        return {
+          osc: {
+            address: p.path,
+            type: "b",
+            value: 1,
+          },
+          reward: rewards.filter((r) => r.title.includes("Text-to-Speech"))[0],
+        };
+      });
+
+    rewardMap.forEach((p) => {
+      console.log(
+        `Reward ${p.reward.title} will set ${p.osc.address} to ${p.osc.value}`
+      );
     });
 
     // Initialize Twitch EventSub listener

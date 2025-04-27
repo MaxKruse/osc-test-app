@@ -3,7 +3,10 @@ import { ApiClient } from "@twurple/api";
 import { OscClient } from "../osc/OscClient.js";
 
 export type RewardMapEntry = {
-  rewardId: string;
+  reward: {
+    id: string;
+    title: string;
+  };
   osc: {
     address: string;
     type: string;
@@ -46,7 +49,7 @@ export class TwitchEventSubListener {
           try {
             const rewardId = event.rewardId;
             const match = this.rewardMap.find(
-              (entry) => entry.rewardId === rewardId
+              (entry) => entry.reward.id === rewardId
             );
 
             if (match) {
