@@ -23,19 +23,22 @@ export class TwitchEventSubListener {
   private apiClient: ApiClient;
   private oscClient: OscClient;
   private broadcasterUserId: string;
-  private rewardMap: RewardMapEntry[];
+  private rewardMap: RewardMapEntry[] = [];
   private listener: EventSubWsListener | null = null;
 
   constructor(
     apiClient: ApiClient,
     oscClient: OscClient,
-    broadcasterUserId: string,
-    rewardMap: RewardMapEntry[]
+    broadcasterUserId: string
   ) {
     this.apiClient = apiClient;
     this.oscClient = oscClient;
     this.broadcasterUserId = broadcasterUserId;
-    this.rewardMap = rewardMap;
+    // rewardMap will be set via updateMapping
+  }
+
+  public updateMapping(newRewardMap: RewardMapEntry[]) {
+    this.rewardMap = newRewardMap;
   }
 
   public async start(): Promise<void> {
