@@ -1,4 +1,5 @@
 import { Client, ClientSendArgs, Server } from "node-osc";
+import { discoverAvatarParameters } from "./OscQuery.js";
 
 export class OscClient {
   private host: string;
@@ -16,7 +17,7 @@ export class OscClient {
     // when the server receives a message with /avatar/parameters/ we capture the value
     this.server = new Server(this.port + 1, "0.0.0.0");
 
-    this.server.on("message", (msg) => {
+    this.server.on("message", async (msg) => {
       const [address, ...values] = msg;
 
       if (
@@ -25,13 +26,22 @@ export class OscClient {
       ) {
         this.avatarParams.set(address, values[0]);
       }
+
+      if (address === "/avatar/change") {
+        const newParams = await discoverAvatarParameters();
+
+        // todo: somehow update the currently running TwitchEventSubListener to use these new Params instead. e.g. remap everything
+      }
     });
   }
 
-  public async sendToggle(address: string, timer: number) {
+  public async sendToggle(address: string, timer?: number) {
     const before = await this.get(address);
 
     this.send(address, !before);
+
+    if (timer == undefined) return;
+
     setTimeout(() => {
       this.send(address, before);
     }, timer);

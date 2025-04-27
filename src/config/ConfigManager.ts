@@ -20,10 +20,16 @@ export interface IRewardMappingConfigEntry {
     title: string;
     // id?: string; // Keep id optional for now, title is primary
   };
-  osc: {
-    address: string;
-    value: number | boolean | string;
-  };
+  osc:
+    | {
+        type?: "set";
+        address: string;
+        value: number | boolean | string;
+      }
+    | {
+        type: "toggle";
+        address: string;
+      };
   timeout?: {
     delayMs: number;
     value: number | boolean | string;
@@ -59,12 +65,22 @@ export class ConfigManager {
               title: "*Hydrate*",
             },
             osc: {
+              type: "set",
               address: "/avatar/parameters/BlackHair",
               value: 0,
             },
             timeout: {
               delayMs: 5000,
               value: 1,
+            },
+          },
+          {
+            reward: {
+              title: "*Toggle Example*",
+            },
+            osc: {
+              type: "toggle",
+              address: "/avatar/parameters/ToggleExample",
             },
           },
         ],
@@ -130,22 +146,57 @@ export class ConfigManager {
         continue;
       }
 
-      const entry: RewardMapEntry = {
-        reward: matchedReward,
-        osc: {
-          address: mapping.osc.address,
-          value: mapping.osc.value,
-        },
-      };
+      // Determine osc type, default to "set"
+      const oscType = mapping.osc.type ?? "set";
 
-      if (mapping.timeout) {
-        entry.timeout = {
-          delayMs: mapping.timeout.delayMs,
-          value: mapping.timeout.value,
+      if (oscType === "toggle") {
+        // Validate timer presence with type assertion
+        const oscToggle = mapping.osc as {
+          type: "toggle";
+          address: string;
         };
-      }
 
-      mappedEntries.push(entry);
+        const entry: RewardMapEntry = {
+          reward: matchedReward,
+          osc: {
+            type: "toggle",
+            address: oscToggle.address,
+          },
+        };
+
+        // No timeout for toggle type
+        mappedEntries.push(entry);
+      } else {
+        // Default to "set" type with type assertion
+        const oscSet = mapping.osc as {
+          type?: "set";
+          address: string;
+          value?: string | number | boolean;
+        };
+        if (oscSet.value === undefined) {
+          console.warn(
+            `Invalid set OSC config for reward '${mapping.reward.title}': missing 'value'. Skipping.`
+          );
+          continue;
+        }
+
+        const entry: RewardMapEntry = {
+          reward: matchedReward,
+          osc: {
+            type: "set",
+            address: oscSet.address,
+            value: oscSet.value,
+          },
+        };
+
+        if (mapping.timeout) {
+          entry.timeout = {
+            delayMs: mapping.timeout.delayMs,
+          };
+        }
+
+        mappedEntries.push(entry);
+      }
     }
 
     return mappedEntries;

@@ -63,7 +63,9 @@ async function main() {
 
     rewardMap.forEach((p) => {
       console.log(
-        `Reward ${p.reward.title} will set ${p.osc.address} to ${p.osc.value}`
+        `Reward ${p.reward.title} will set ${p.osc.address} as ${
+          p.osc.type == "set" ? "set parameter to" + p.osc.value : "toggle"
+        }`
       );
     });
 

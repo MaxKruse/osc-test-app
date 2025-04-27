@@ -4,13 +4,18 @@ import { OscClient } from "../osc/OscClient.js";
 
 export interface RewardMapEntry {
   reward: any; // TODO: Replace with actual Twitch Reward type
-  osc: {
-    address: string;
-    value: number | boolean | string;
-  };
+  osc:
+    | {
+        type?: "set";
+        address: string;
+        value: number | boolean | string;
+      }
+    | {
+        type: "toggle";
+        address: string;
+      };
   timeout?: {
     delayMs: number;
-    value: number | boolean | string;
   };
 }
 
@@ -53,27 +58,34 @@ export class TwitchEventSubListener {
             );
 
             if (match) {
-              const { address, value } = match.osc;
-              await this.oscClient.send(address, value);
-              console.info(
-                `OSC message sent for reward redemption: reward=${
-                  match.reward.title
-                }, address=${address}, value=${JSON.stringify(value)}`
-              );
+              if (match.osc.type === "toggle") {
+                await this.oscClient.sendToggle(
+                  match.osc.address,
+                  match.timeout?.delayMs
+                );
+                console.info(
+                  `OSC toggle sent for reward redemption: reward=${match.reward.title}, address=${match.osc.address}, timer=${match.timeout?.delayMs}`
+                );
+              } else {
+                // Default to "set" type
+                const { address, value } = match.osc;
+                await this.oscClient.send(address, value);
+                console.info(
+                  `OSC message sent for reward redemption: reward=${
+                    match.reward.title
+                  }, address=${address}, value=${JSON.stringify(value)}`
+                );
 
-              console.log("Has timeout? ", JSON.stringify(match.timeout));
+                console.log("Has timeout? ", JSON.stringify(match.timeout));
 
-              if (match.timeout !== undefined) {
-                setTimeout(async () => {
-                  await this.oscClient.send(address, match.timeout!.value);
-                  console.info(
-                    `OSC message sent for reward redemption: reward=${
-                      match.reward.title
-                    }, address=${address}, value=${JSON.stringify(
-                      match.timeout!.value
-                    )}`
-                  );
-                }, match.timeout.delayMs);
+                if (match.timeout !== undefined) {
+                  setTimeout(async () => {
+                    await this.oscClient.sendToggle(address);
+                    console.info(
+                      `OSC message sent for reward redemption: reward=${match.reward.title}, address=${address}}`
+                    );
+                  }, match.timeout.delayMs);
+                }
               }
             } else {
               console.debug(
