@@ -1,5 +1,11 @@
-import { readFileSync, existsSync, writeFileSync } from "fs";
+import {
+  readFileSync,
+  existsSync,
+  writeFileSync,
+  promises as fsPromises,
+} from "fs";
 import { resolve } from "path";
+import { EventEmitter } from "events";
 import { RewardMapEntry } from "../twitch/TwitchEventSub.js";
 import { FlatEntry } from "../osc/OscQuery.js";
 
@@ -42,12 +48,14 @@ export interface IAppConfig {
   rewardMapping: IRewardMappingConfigEntry[];
 }
 
-export class ConfigManager {
+export class ConfigManager extends EventEmitter {
   private config: IAppConfig;
+  private configPath: string;
 
   constructor() {
-    const configPath = resolve("./config/config.json");
-    if (!existsSync(configPath)) {
+    super();
+    this.configPath = resolve("./config/config.json");
+    if (!existsSync(this.configPath)) {
       const defaultConfig: IAppConfig = {
         twitch: {
           clientId: "YOUR_TWITCH_CLIENT_ID",
@@ -86,7 +94,7 @@ export class ConfigManager {
         ],
       };
       writeFileSync(
-        configPath,
+        this.configPath,
         JSON.stringify(defaultConfig, null, 2),
         "utf-8"
       );
@@ -96,7 +104,7 @@ export class ConfigManager {
       process.exit(1);
     }
     try {
-      const rawData = readFileSync(configPath, "utf-8");
+      const rawData = readFileSync(this.configPath, "utf-8");
       const parsedConfig = JSON.parse(rawData);
       this.config = parsedConfig as IAppConfig;
     } catch (error) {
@@ -204,5 +212,17 @@ export class ConfigManager {
 
   public getFullConfig(): IAppConfig {
     return this.config;
+  }
+
+  public async reloadConfig(): Promise<void> {
+    try {
+      const fileContent = await fsPromises.readFile(this.configPath, "utf-8");
+      const parsedConfig = JSON.parse(fileContent);
+      this.config = parsedConfig as IAppConfig;
+      this.emit("config_updated", this.config);
+    } catch (error) {
+      console.error("Failed to reload config:", error);
+      this.emit("config_error", error);
+    }
   }
 }

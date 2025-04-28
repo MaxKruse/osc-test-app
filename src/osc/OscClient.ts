@@ -59,6 +59,12 @@ export class OscClient {
     }, timer);
   }
 
+  public disconnect() {
+    if (this.server) {
+      this.server.close();
+    }
+  }
+
   public async send(address: string, ...args: ClientSendArgs) {
     const client = new Client(this.host, this.port);
     client.send(address, ...args);
