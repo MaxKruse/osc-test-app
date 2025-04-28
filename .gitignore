@@ -2,3 +2,6 @@ node_modules
 data/
 .env
 dist/
+
+config/config.json
+tokens.json
