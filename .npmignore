@@ -1,0 +1,13 @@
+# Source files
+src/
+
+# Config files
+tsconfig.json
+config/
+
+# Lockfiles (already handled by package manager, but good practice)
+pnpm-lock.yaml
+package-lock.json
+
+# GitHub specific
+.github/

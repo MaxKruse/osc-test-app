@@ -1,7 +1,7 @@
 {
-  "name": "osc-test",
+  "name": "twitch-osc-bridge",
   "version": "1.0.0",
-  "description": "",
+  "description": "A bridge between Twitch events (EventSub) and OSC messages.",
   "main": "dist/main.js",
   "type": "module",
   "scripts": {
@@ -9,9 +9,28 @@
     "start": "node dist/main.js",
     "dev": "npx tsx src/main.ts"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "twitch",
+    "eventsub",
+    "osc",
+    "open sound control",
+    "bridge"
+  ],
+  "author": "maxkruse",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxkruse/twitch-osc-bridge.git"
+  },
+  "homepage": "https://github.com/maxkruse/twitch-osc-bridge#readme",
+  "bugs": {
+    "url": "https://github.com/maxkruse/twitch-osc-bridge/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "packageManager": "pnpm@10.5.0",
   "dependencies": {
     "@twurple/api": "^7.3.0",
