@@ -40,7 +40,7 @@ jobs:
 
       # pnpm publish will now read the .npmrc file created by setup-node
       - name: Publish to npm
-        run: pnpm publish --no-git-checks
+        run: pnpm publish --no-git-checks --access public
         # The NODE_AUTH_TOKEN env here is no longer needed as setup-node handled it
         # env:
         #   NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # This line is removed/commented
