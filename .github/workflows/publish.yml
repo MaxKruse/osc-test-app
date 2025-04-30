@@ -3,36 +3,44 @@ name: Publish to npm
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*" # Trigger on version tags like v1.0.0
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      # id-token: write # Potentially needed for provenance later, but not for basic auth
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        # Optionally fetch tags if needed for versioning logic (usually not needed for publish itself)
+        # with:
+        #   fetch-depth: 0 # Fetches all history + tags
 
       # Setup PNPM first to make it available
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
 
-      # Then setup Node.js, enabling caching for the now available pnpm
-      - name: Setup Node.js
+      # Then setup Node.js, configuring the registry and auth
+      - name: Setup Node.js and Authenticate with npm
         uses: actions/setup-node@v4
         with:
-          node-version: 23.x
-          cache: 'pnpm' # Cache depends on pnpm being available
+          node-version: "20.x" # Use LTS or your desired version
+          registry-url: "https://registry.npmjs.org/" # Specify the npm registry
+          cache: "pnpm" # Cache depends on pnpm being available
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # Provide the token to setup-node
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build project
+      - name: Build project (if necessary)
         run: pnpm run build
 
-      # pnpm publish automatically uses NODE_AUTH_TOKEN and the default registry
+      # pnpm publish will now read the .npmrc file created by setup-node
       - name: Publish to npm
         run: pnpm publish --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # Pass token to the publish step
+        # The NODE_AUTH_TOKEN env here is no longer needed as setup-node handled it
+        # env:
+        #   NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # This line is removed/commented
