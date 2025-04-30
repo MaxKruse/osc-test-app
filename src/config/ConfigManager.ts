@@ -2,9 +2,10 @@ import {
   readFileSync,
   existsSync,
   writeFileSync,
+  mkdirSync,
   promises as fsPromises,
 } from "fs";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
 import { EventEmitter } from "events";
 import { RewardMapEntry } from "../twitch/TwitchEventSub.js";
 import { FlatEntry } from "../osc/OscQuery.js";
@@ -93,6 +94,8 @@ export class ConfigManager extends EventEmitter {
           },
         ],
       };
+      // Ensure the parent directory exists before saving the config file
+      mkdirSync(dirname(this.configPath), { recursive: true });
       writeFileSync(
         this.configPath,
         JSON.stringify(defaultConfig, null, 2),

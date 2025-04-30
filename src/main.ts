@@ -1,3 +1,17 @@
+export type {
+  IAppConfig,
+  ITwitchConfig,
+  IOscConfig,
+  IRewardMappingConfigEntry,
+} from "./config/ConfigManager.js";
+export { OscClient } from "./osc/OscClient.js";
+export type { FlatEntry } from "./osc/OscQuery.js";
+export { discoverAvatarParameters } from "./osc/OscQuery.js";
+export { getChannelPointRewards } from "./twitch/ChannelRewards.js";
+export { getAuthProvider } from "./twitch/TwitchAuth.js";
+export type { RewardMapEntry } from "./twitch/TwitchEventSub.js";
+export { TwitchEventSubListener } from "./twitch/TwitchEventSub.js";
+export { getUserIdByUsername } from "./twitch/UserLookup.js";
 import equal from "fast-deep-equal";
 import { OscClient } from "./osc/OscClient.js";
 import { getAuthProvider } from "./twitch/TwitchAuth.js";
