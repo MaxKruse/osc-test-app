@@ -126,6 +126,24 @@ export class ConfigManager extends EventEmitter {
   public getOscConfig(): IOscConfig {
     return this.config.osc;
   }
+  /**
+   * Asynchronously writes the provided config object to the config file.
+   * Updates the internal config state only after a successful write.
+   * @param config The configuration object to persist.
+   */
+  public async writeConfig(config: IAppConfig): Promise<void> {
+    const json = JSON.stringify(config, null, 2);
+    try {
+      await fsPromises.writeFile(this.configPath, json, "utf-8");
+      this.config = config;
+    } catch (error) {
+      console.error(
+        `Failed to write config file at ${this.configPath}:`,
+        error
+      );
+      throw error;
+    }
+  }
 
   public getRewardMappingConfig(
     params: FlatEntry[],

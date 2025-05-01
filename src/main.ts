@@ -1,5 +1,4 @@
 export type {
-  IAppConfig,
   ITwitchConfig,
   IOscConfig,
   IRewardMappingConfigEntry,
@@ -8,6 +7,7 @@ export { OscClient } from "./osc/OscClient.js";
 export type { FlatEntry } from "./osc/OscQuery.js";
 export { discoverAvatarParameters } from "./osc/OscQuery.js";
 export { getChannelPointRewards } from "./twitch/ChannelRewards.js";
+import type { IAppConfig } from "./config/ConfigManager.js";
 export { getAuthProvider } from "./twitch/TwitchAuth.js";
 export type { RewardMapEntry } from "./twitch/TwitchEventSub.js";
 export { TwitchEventSubListener } from "./twitch/TwitchEventSub.js";
@@ -123,7 +123,7 @@ class TwitchOscIntegrationService extends EventEmitter {
    * Explicitly refreshes the configuration by reloading it from the ConfigManager.
    * Emits an error_report event if ConfigManager is not initialized.
    */
-  public async refreshConfig() {
+  public async refreshConfig(config: IAppConfig) {
     if (!this.configManager) {
       this.emit(
         "error_report",
@@ -131,6 +131,7 @@ class TwitchOscIntegrationService extends EventEmitter {
       );
       return;
     }
+    await this.configManager.writeConfig(config);
     await this.configManager.reloadConfig();
   }
 
