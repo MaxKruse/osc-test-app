@@ -1,6 +1,6 @@
 {
   "name": "twitch-osc-bridge",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A bridge between Twitch events (EventSub) and OSC messages.",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",

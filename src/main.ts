@@ -119,6 +119,20 @@ class TwitchOscIntegrationService extends EventEmitter {
       console.error("Error in stop:", error);
     }
   }
+  /**
+   * Explicitly refreshes the configuration by reloading it from the ConfigManager.
+   * Emits an error_report event if ConfigManager is not initialized.
+   */
+  public async refreshConfig() {
+    if (!this.configManager) {
+      this.emit(
+        "error_report",
+        new Error("ConfigManager not initialized, cannot refresh config.")
+      );
+      return;
+    }
+    await this.configManager.reloadConfig();
+  }
 
   private async initializeServices(config: any) {
     // Clean up existing services if any
